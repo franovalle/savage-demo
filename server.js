@@ -4,8 +4,9 @@ const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 
 var db, collection;
+//"mongodb+srv://demo:demo@cluster0-q2ojb.mongodb.net/test?retryWrites=true"//leons
 
-const url = "mongodb+srv://demo:demo@cluster0-q2ojb.mongodb.net/test?retryWrites=true";
+const url = "mongodb+srv://demo:demo@cluster0.idtjyh6.mongodb.net/?retryWrites=true"//frans
 const dbName = "demo";
 
 app.listen(3000, () => {
@@ -52,7 +53,22 @@ app.put('/messages', (req, res) => {
     res.send(result)
   })
 })
-
+//the down arrow
+app.put('/messagesDown', (req, res) => {
+  db.collection('messages')
+  .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+    $set: {
+      thumbUp:req.body.thumbDown - 1
+    }
+  }, {
+    sort: {_id: -1},
+    upsert: true
+  }, (err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+//
 app.delete('/messages', (req, res) => {
   db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
     if (err) return res.send(500, err)
